@@ -7,8 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0-11/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/reset.css">
+    
     <title>Train Schedule</title>
 </head>
 
@@ -26,12 +27,28 @@
             <div class="col-sm-12">
                 <br>
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header bg-primary text-white">
                         <strong>Current Train Schedule</strong>
                     </div>
                     <div class="card-body">
                         <form role="form">
+                            <div class="row">
+                                <div class="col-sm-2">Train Name</div>
+                                <div class="col-sm-2">Destination</div>
+                                <div class="col-sm-2">Frequency (min)</div>
+                                <div class="col-sm-2">Next Arrival</div>
+                                <div class="col-sm-2">Minutes Away</div>
+                            </div>
 
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-sm-2" id="train-name"></div>
+                                <div class="col-sm-2" id="train-dest"></div>
+                                <div class="col-sm-2" id="train-freq"></div>
+                                <div class="col-sm-2" id="train-arrival"></div>
+                                <div class="col-sm-2" id="train-proximity"></div>
+                            </div>
 
                         </form>
                     </div>
@@ -44,7 +61,7 @@
             <div class="col-sm-12">
                 <br>
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header bg-primary text-white">
                         <strong>Add Train</strong>
                     </div>
                     <div class="card-body">
@@ -53,40 +70,42 @@
                             <!-- Train Name -->
                             <div class="form-group">
                                 <label for="search">Train Name</label>
-                                <input type="text" class="form-control" id="train-name">
+                                <input type="text" class="form-control" id="name-input">
                             </div>
 
                             <!-- Train Destination -->
                             <div class="form-group">
                                 <label for="search">Train Destination</label>
-                                <input type="text" class="form-control" id="train-dest">
+                                <input type="text" class="form-control" id="dest-input">
                             </div>
 
                             <!-- Train Time -->
                             <div class="form-group">
-                                <label for="search">First Train Time (HH:mm - Military Time</label>
-                                <input type="text" class="form-control" id="train-time">
+                                <label for="search">First Train Time (HH:mm - Military Time)</label>
+                                <input type="text" class="form-control" id="time-input">
                             </div>
 
                             <!-- Train Frequency -->
                             <div class="form-group">
                                 <label for="search">Frequency - (min)</label>
-                                <input type="text" class="form-control" id="train-freq">
+                                <input type="text" class="form-control" id="freq-input">
                             </div>
+
+                            <!-- Search -->
+                            <button type="button" class="btn btn-primary" id="confirm-train">Confirm</button>
+
+                            <br>
+                        </form>
                     </div>
-
-                    <!-- Search -->
-                    <button type="button" class="btn btn-primary" id="confirm-train">Confirm</button>
-
-                    </form>
                 </div>
             </div>
         </div>
-
     </div>
 
+    <br>
 
-    </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="assets/js/app.js"></script>
     <!-- Firebase Core JavaScript Link -->
     <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
 
