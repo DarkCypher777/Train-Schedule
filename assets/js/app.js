@@ -17,8 +17,7 @@ firebase.initializeApp(config);
 // Get a reference to the database service
 var database = firebase.database();
 
-// Initial Variables (SET the first set IN FIREBASE FIRST)
-// Note remember to create these same variables in Firebase!
+// Button for adding trains
 $("#confirm-train").on("click", function (event) {
     // Prevent the page from refreshing
     event.preventDefault();
@@ -27,8 +26,8 @@ $("#confirm-train").on("click", function (event) {
     // TODO use https://momentjs.com/docs/#/parsing/string-format/ for time
     var trainName = $("#name-input").val().trim();
     var trainDest = $("#dest-input").val().trim();
-    var trainTime = $("#time-input").val().trim();
-    var trainFreq = $("#freq-input").val().trim();
+    var trainTime = moment($("#time-input").val().trim(), "HH/mm").format("X");
+    var trainFreq = moment($("#freq-input").val().trim(), "mm").format("X");
 
     // Creates local temp object for holding train data
     var newTrain = {
@@ -50,10 +49,10 @@ $("#confirm-train").on("click", function (event) {
     alert("Train Added")
 
     // clear text box after input
-    $("#name-input") > val("");
-    $("#dest-input") > val("");
-    $("#time-input") > val("");
-    $("#freq-input") > val("");
+    $("#name-input").val("");
+    $("#dest-input").val("");
+    $("#time-input").val("");
+    $("#freq-input").val("");
 });;
 
 //  At the initial load and on subsequent data value changes, get a snapshot of the current data. (I.E FIREBASE HERE)
@@ -61,7 +60,7 @@ $("#confirm-train").on("click", function (event) {
 // Firebase is always watching for changes to the data.
 // When changes occurs it will print them to console and html
 database.ref().on("child_added", function (childSnapshot) {
-    console.log(snapshot.val());
+    console.log(childSnapshot.val());
 
     var trainName = childSnapshot.val().name;
     var trainDest = childSnapshot.val().destination
@@ -74,27 +73,47 @@ database.ref().on("child_added", function (childSnapshot) {
     console.log(trainTime);
     console.log(trainFreq);
 
-    // make it look neat and clean
-    var trainTimeUnify = moment.unix(trainTime).format("MM/DD/YYYY");
+    // TIME Calculation area (check timesheet logic and train example)
 
-    // calculate next arivial
-    // var empMonths = moment().diff(moment(trainTime, "X"), "months");
-    // console.log(empMonths);
+    // Next Arrival example 04:10 PM
+    var trainFreq = "";
 
-    // calculate minutes away
+    // Minutes Away
+    var trainProx = "";
 
+    var trainProxConverted = moment(trainProx, "HH:mm").subtract(1, "years");
+    console.log(trainProxConverted);
+
+    var currentTime = moment();
+    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+    var diffTime = moment().diff(moment(trainProxConverted), "minutes");
+    console.log("DIFFERENCE IN TIME: " + diffTime);
+
+    var tRemainder = diffTime % trainFreq;
+    console.log(tRemainder);
+
+    // Minute Until Train
+    var tMinutesTillTrain = trainFreq - tRemainder;
+    console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+    // Next Train
+    var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+    console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
 
     // create new row
-    var newRow = $("<>").append(
-        $("<>").text(trainName),
-        $("<>").text(trainDest),
-        $("<>").text(trainFreq),
-        $("<>").text(trainTime),
-        $("<>").text(trainProx)
+    var newRow = $("<tr>").append(
+        $("<td>").text(trainName),
+        $("<td>").text(trainDest),
+        $("<td>").text(trainFreq),
+        // next arrival
+        $("<td>").text(trainTime),
+        // minutes away
+        $("<td>").text(trainProx)
     )
 
-      // Append the new row to the table
-  $("#employee-table > tbody").append(newRow);
+    // Append the new row to the table
+    $("#train-table > tbody").append(newRow);
 
     // If any errors are experienced, log them to console.
 }, function (errorObject) {
@@ -102,6 +121,36 @@ database.ref().on("child_added", function (childSnapshot) {
 });
 
 
+
+// Assumptions
+var timeFreq = "";
+
+// Time is 3:30 AM
+var firstTime = "00:00";
+
+// First Time (pushed back 1 year to make sure it comes before current time)
+var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
+console.log(firstTimeConverted);
+
+// Current Time
+var currentTime = moment();
+console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+// Difference between the times
+var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+console.log("DIFFERENCE IN TIME: " + diffTime);
+
+// Time apart (remainder)
+var tRemainder = diffTime % timeFreq;
+console.log(tRemainder);
+
+// Minute Until Train
+var tMinutesTillTrain = timeFreq - tRemainder;
+console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+// Next Train
+var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
 
 
 // database.ref().set({
