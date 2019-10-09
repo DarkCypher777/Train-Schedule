@@ -25,7 +25,7 @@ $("#confirm-train").on("click", function (event) {
     // TODO use https://momentjs.com/docs/#/parsing/string-format/ for time
     var trainName = $("#name-input").val().trim();
     var trainDest = $("#dest-input").val().trim();
-    var trainTime = moment($("#time-input").val().trim(), "HH/mm").format("X");
+    var trainTime = moment($("#time-input").val().trim(), "HH:mm:A").format("X");
     var trainFreq = $("#freq-input").val().trim();
 
     // Creates local temp object for holding train data
@@ -74,31 +74,35 @@ database.ref().on("child_added", function (childSnapshot) {
 
     // TIME Calculation area (check timesheet logic and train example)
 
-    // Next Arrival example 04:10 PM
-    var tFrequency = 3;
+    // Assumptions
+    // var tFrequency = 3;
 
-    // Minutes Away
+    // Time is 3:30 AM
     var firstTime = "03:30";
 
-    var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
+    var firstTimeConverted = moment(firstTime, "HH:mm:A").subtract(1, "years");
     console.log(firstTimeConverted);
 
+    // Current Time
     var currentTime = moment();
-    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm:A"));
 
+    // Difference between the times
     var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
     console.log("DIFFERENCE IN TIME: " + diffTime);
 
-    var tRemainder = diffTime % tFrequency;
+    // Time apart (remainder)
+    var tRemainder = diffTime % trainFreq;
     console.log(tRemainder);
 
     // Minute Until Train
-    var tMinutesTillTrain = tFrequency - tRemainder;
+    var tMinutesTillTrain = trainFreq - tRemainder;
     console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
 
     // Next Train
     var nextTrain = moment().add(tMinutesTillTrain, "minutes");
     console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+
 
     // create new row
     var newRow = $("<tr>").append(
@@ -109,7 +113,7 @@ database.ref().on("child_added", function (childSnapshot) {
         // next arrival
         $("<td>").text(nextTrain),
         // minutes away
-        $("<td>").text(tMinutesTillTrain)
+        $("<td>").text(tRemainder)
     )
 
     // Append the new row to the table
