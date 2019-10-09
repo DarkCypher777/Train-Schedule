@@ -26,7 +26,7 @@ $("#confirm-train").on("click", function (event) {
     var trainName = $("#name-input").val().trim();
     var trainDest = $("#dest-input").val().trim();
     var trainTime = moment($("#time-input").val().trim(), "HH/mm").format("X");
-    var trainFreq = moment($("#freq-input").val().trim(), "mm").format("X");
+    var trainFreq = $("#freq-input").val().trim();
 
     // Creates local temp object for holding train data
     var newTrain = {
@@ -75,25 +75,25 @@ database.ref().on("child_added", function (childSnapshot) {
     // TIME Calculation area (check timesheet logic and train example)
 
     // Next Arrival example 04:10 PM
-    var trainFreq = "";
+    var tFrequency = 3;
 
     // Minutes Away
-    var trainProx = "";
+    var firstTime = "03:30";
 
-    var trainProxConverted = moment(trainProx, "HH:mm").subtract(1, "years");
-    console.log(trainProxConverted);
+    var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
+    console.log(firstTimeConverted);
 
     var currentTime = moment();
     console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
 
-    var diffTime = moment().diff(moment(trainProxConverted), "minutes");
+    var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
     console.log("DIFFERENCE IN TIME: " + diffTime);
 
-    var tRemainder = diffTime % trainFreq;
+    var tRemainder = diffTime % tFrequency;
     console.log(tRemainder);
 
     // Minute Until Train
-    var tMinutesTillTrain = trainFreq - tRemainder;
+    var tMinutesTillTrain = tFrequency - tRemainder;
     console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
 
     // Next Train
@@ -104,11 +104,12 @@ database.ref().on("child_added", function (childSnapshot) {
     var newRow = $("<tr>").append(
         $("<td>").text(trainName),
         $("<td>").text(trainDest),
+        // frequency
         $("<td>").text(trainFreq),
         // next arrival
-        $("<td>").text(trainTime),
+        $("<td>").text(nextTrain),
         // minutes away
-        $("<td>").text(trainProx)
+        $("<td>").text(tMinutesTillTrain)
     )
 
     // Append the new row to the table
@@ -118,40 +119,3 @@ database.ref().on("child_added", function (childSnapshot) {
 }, function (errorObject) {
     console.log("The read failed: " + errorObject.code);
 });
-
-
-
-// // Assumptions
-// var timeFreq = "";
-
-// // Time is 3:30 AM
-// var firstTime = "00:00";
-
-// // First Time (pushed back 1 year to make sure it comes before current time)
-// var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
-// console.log(firstTimeConverted);
-
-// // Current Time
-// var currentTime = moment();
-// console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
-
-// // Difference between the times
-// var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-// console.log("DIFFERENCE IN TIME: " + diffTime);
-
-// // Time apart (remainder)
-// var tRemainder = diffTime % timeFreq;
-// console.log(tRemainder);
-
-// // Minute Until Train
-// var tMinutesTillTrain = timeFreq - tRemainder;
-// console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
-
-// // Next Train
-// var nextTrain = moment().add(tMinutesTillTrain, "minutes");
-// console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
-
-
-// database.ref().set({
-//     clickCount: clickCounter
-//   });
